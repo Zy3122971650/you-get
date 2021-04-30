@@ -1393,7 +1393,6 @@ def load_cookies(cookiefile):
                     assert domain_specified == initial_dot
 
                 discard = False
-                print(expires)
                 if expires == "":
                     expires = None
                     discard = True
@@ -1409,13 +1408,14 @@ def load_cookies(cookiefile):
                            None,
                            None,
                            {})
-                # TODO
-                # 不明白为什么要依据网站给出来的cookies过期时间来过期，那些expires被设置成0的关键Cookie将不能被使用,我觉得作为下载器，应该先入为主的认为Cookies是没有过期的，我们只需要试一下就行。
+                # confuse
+                # 不明白为什么要依据网站给出来的cookies过期时间来过期，那些expires被设置成0的关键Cookie将不能被使用,我们应该延续浏览器的状态。
+                # 如果仅仅是不理会is_expired这个判断条件，expires设置为0的cookie依旧无法使用。
+                # 现在只能先设置一个过期时间
                 if not ignore_discard and c.discard:
                     continue
                 if not ignore_expires and c.is_expired(now):
                     continue
-                print(2)
                 cookies.set_cookie(c)
 
     elif cookiefile.endswith(('.sqlite', '.sqlite3')):
